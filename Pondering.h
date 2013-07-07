@@ -1,6 +1,8 @@
 #include "Utilities.h"
 #include "searcher.h"
 #include "position.h"
+#define WINAPI
+typedef int HANDLE;
 
 namespace pondering
 {
@@ -19,7 +21,7 @@ namespace pondering
 	extern move PonderingMove;
 	extern DWORD PonderedTime;
 
-	DWORD WINAPI Ponder( void* Info );
+	DWORD Ponder( void* Info );
 	void StopPondering();
 	void StartPondering( position* Position, searcher* Searcher );
 }

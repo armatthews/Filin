@@ -93,4 +93,7 @@ bitboard SquaresOfSameColor( square s );
 bitboard GetIntermediateSquares( square Start, square End );
 
 void ZeroMemory(void* destination, int length);
+unsigned int timeGetTime();
+unsigned int timeBeginPeriod(unsigned int);
+unsigned int timeEndPeriod(unsigned int);
 #pragma once

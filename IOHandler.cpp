@@ -480,7 +480,7 @@ inputStatus IOHandler::RunTest( vector< string >& Parameters )
 inputStatus IOHandler::Debug( vector< string >& Parameters )
 {
 	int Count = atoi( Parameters[ 0 ].c_str() );
-	DWORD StartTime = GetTickCount();
+	DWORD StartTime = timeGetTime();
 	move Move = move( E2, E4, Empty );
 
 	for( int i = 0; i < Count; i++ )
@@ -488,7 +488,7 @@ inputStatus IOHandler::Debug( vector< string >& Parameters )
 		Position.MakeMove( Move );
 		Position.TakeBack();
 	}
-	DWORD EndTime = GetTickCount();
+	DWORD EndTime = timeGetTime();
 	cout << "Took " << ( EndTime - StartTime ) / 1000.f << " seconds.\n";
 	return INPUT_HANDLED;
 }

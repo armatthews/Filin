@@ -1,5 +1,8 @@
+#include <cmath>
+#include <stdlib.h>
 #include "position.h"
 #include "moveGenerator.h"
+using std::abs;
 
 position::position()
 {

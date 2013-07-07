@@ -6,6 +6,7 @@
 #pragma intrinsic(_BitScanReverse)
 #pragma intrinsic(_BitScanReverse64)
 #else
+#include <sys/time.h>
 static inline unsigned char _BitScanForward(unsigned long* Index, bitboard Mask)
 {
 	bitboard Ret;
@@ -30,6 +31,16 @@ static inline unsigned char _BitScanReverse(unsigned long* Index, bitboard Mask)
 	*Index = (unsigned long)Ret;
 	return Mask ? 1 : 0;
 }
+
+unsigned int timeGetTime()
+{
+	struct timeval now;
+	gettimeofday(&now, NULL);
+	return now.tv_usec / 1000;
+}
+
+unsigned int timeBeginPeriod(unsigned int) {}
+unsigned int timeEndPeriod(unsigned int) {}
 #endif
 #pragma warning( disable: 4996 )
 

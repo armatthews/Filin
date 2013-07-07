@@ -353,7 +353,7 @@ void evaluator::EvaluateKnights( color c )
 		EndGameScore += MobilityScore;
 
 		if( Evaluation.Dangerous[ c ] )
-			Evaluation.Tropism[ c ] += KingTropism[ Knight ][ Distance( s, Evaluation.KingSquare[ Enemy ] ) ];
+			Evaluation.Tropism[ c ] += KingTropism[ Knight ][ (int)Distance( s, Evaluation.KingSquare[ Enemy ] ) ];
 
 		MyKnights ^= Mask[ s ];
 	}
@@ -552,7 +552,7 @@ void evaluator::EvaluateQueens( color c )
 		EndGameScore += PieceSquare[ Queen ][ EndGame ][ MySquare[ c ][ s ] ];
 
 		if( Evaluation.Dangerous[ c ] )
-			Evaluation.Tropism[ c ] += KingTropism[ Queen ][ Distance( s, EnemyKingSquare ) ];
+			Evaluation.Tropism[ c ] += KingTropism[ Queen ][ (int)Distance( s, EnemyKingSquare ) ];
 
 		int ManhattanDistance = RankDistance( EnemyKingSquare, s ) + FileDistance( EnemyKingSquare, s );
 		MiddleGameScore += ( 8 - ManhattanDistance );

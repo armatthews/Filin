@@ -14,7 +14,7 @@ namespace pondering
 
 	DWORD WINAPI Ponder( void* Info )
 	{
-		//cout << "Starting...\n";
+		/*//cout << "Starting...\n";
 		PonderedTime = 0;
 		DWORD Start = timeGetTime();
 
@@ -46,7 +46,7 @@ namespace pondering
 
 		Searcher->Search( &Position, 0, 0 );
 
-		Position.TakeBack();
+		Position.TakeBack();*/
 
 		Pondering = false;
 		return 0;
@@ -60,23 +60,23 @@ namespace pondering
 		while( Pondering )
 		{
 			PonderInfo.Searcher->Stop();
-			Sleep( 1 );
+			//Sleep( 1 );
 		}
 		//cout << "Stopping...\n";
-		CloseHandle( PonderThread );
+		//CloseHandle( PonderThread );
 	}
 
 	void StartPondering( position* Position, searcher* Searcher )
 	{
 		if( PonderingEnabled )
 		{
-			StopPondering();
+			/*StopPondering();
 
 			PonderInfo.Position = Position;
 			PonderInfo.Searcher = Searcher;
 
 			Pondering = true;
-			PonderThread = CreateThread( NULL, 0, Ponder, &PonderInfo, 0, &PonderThreadID );
+			PonderThread = CreateThread( NULL, 0, Ponder, &PonderInfo, 0, &PonderThreadID );*/
 		}
 	}
 }
