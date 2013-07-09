@@ -111,7 +111,7 @@ move::move( string Coords )
 
 	if( Coords.length() < 4 || Coords.length() > 5 ) { return; }
 
-	Coords = strlwr( Coords );
+	Coords = strlwr(Coords);
 
 	int FromFile = Coords[ 0 ] - 'a';
 	int FromRank = Coords[ 1 ] - '1';

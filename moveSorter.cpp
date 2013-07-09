@@ -141,7 +141,7 @@ move moveSorter::GetNextMove()
 
 			if( MoveIsNew )
 			{
-				MovesSorted++;
+				MovesSorted++;	
 				return Move;
 			}
 		}

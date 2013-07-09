@@ -270,7 +270,7 @@ bitboard moveGenerator::GetLegalMoves( const position* Position, square Square, 
 
 	switch( t )
 	{
-		case Pawn:
+		case Pawn:	
 			if( IsPinned )
 				Moves = GetLegalPawnForwards( Position, Square, ToMove ) | GetLegalPawnAttacks( Position, Square, ToMove );
 			else
@@ -381,12 +381,11 @@ void LegalMoveGenerator::Reset( bitboard TargetMask )
 }
 
 move LegalMoveGenerator::GetNextMove()
-{
+{	
 	while( Moves == 0 )
 	{
 		if( Movers == 0 )
 			return NullMove;
-
 		SetSquareAndMoves();
 	}
 
@@ -407,7 +406,7 @@ move LegalMoveGenerator::GetNextMove()
 		}
 		else
 		{
-			Moves ^= Mask[ To ];
+			Moves ^= Mask[ To ];	
 			return move( Square, To, Empty );
 		}
 	}
@@ -425,7 +424,6 @@ void LegalMoveGenerator::SetSquareAndMoves()
 	bitboard TempMovers = 0;
 	static const type Order[ 6 ] = { Knight, Bishop, Rook, Queen, King, Pawn };
 	type Type;
-
 	while( TempMovers == 0 )
 	{
 		assert( NextType < 6 );
@@ -441,6 +439,7 @@ void LegalMoveGenerator::SetSquareAndMoves()
 
 	bool IsPinned = PinnedPieces & Mask[ Square ];
 	Moves = GetLegalMoves( Position, Square, Type, ToMove, IsPinned ) & TargetMask;
+
 }
 
 EvasionGenerator::EvasionGenerator( position* Position )

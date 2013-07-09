@@ -1,5 +1,6 @@
 #include <string>
 #include <cstring>
+#include <algorithm>
 #include <cmath>
 #include <assert.h>
 #include <iostream>
@@ -7,8 +8,10 @@
 #include <vector>
 #include <map>
 #include <sstream>
-//#include <intrin.h>
-//#include <windows.h>
+#ifdef NT_i386
+  #include <intrin.h>
+  #include <windows.h>
+#endif
 #include "Constants.h"
 #include "Log.h"
 #undef assert
@@ -92,8 +95,10 @@ bitboard Ray( square From, direction Direction );
 bitboard SquaresOfSameColor( square s );
 bitboard GetIntermediateSquares( square Start, square End );
 
+#ifndef NT_i386
 void ZeroMemory(void* destination, int length);
 unsigned int timeGetTime();
 unsigned int timeBeginPeriod(unsigned int);
 unsigned int timeEndPeriod(unsigned int);
+#endif
 #pragma once

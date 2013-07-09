@@ -1,7 +1,9 @@
-// #define UINT64 unsigned __int64 / windows
-#include <inttypes.h>
-#define UINT64 uint64_t
+#ifdef NT_i386
+#define UINT64 unsigned __int64
+#else
+#define UINT64 unsigned long long
 #define byte unsigned char
+#endif
 typedef UINT64 bitboard;
 typedef UINT64 zobrist;
 typedef unsigned long DWORD;

@@ -52,6 +52,7 @@ inputStatus IOHandler::HandleInput( string s )
 	move InputMove = move( s, &Position );
 	if( InputMove == NullMove )
 		InputMove = move( s );
+
 	if( InputMove != NullMove )
 	{
 		Position.MakeMove( InputMove );
@@ -131,8 +132,9 @@ inputStatus IOHandler::RunCommand( string Command, vector< string >& Parameters 
 		else
 			return INPUT_INCORRECTARGUMENTS;
 	}
-	else if( Command == "moves" )
+	else if( Command == "moves" ) {
 		return ListMoves();
+	}
 	else if( Command == "name" )
 		;
 	else if( Command == "new" )
@@ -291,14 +293,12 @@ inputStatus IOHandler::ListMoves()
 {
 	Searcher.ThinkingPosition = Position;
 	moveSorter MoveGenerator( &Searcher, 0 );
-	
+
 	int i = 0;
 	move Move;
-
 	while( ( Move = MoveGenerator.GetNextMove() ) != NullMove )
 	{
 		i++;
-
 		cout << Move.toString( &Position ) << " ";
 		if( i % 5 == 0 )
 			cout << "\n";
@@ -338,6 +338,7 @@ UINT64 IOHandler::Perft( unsigned int d )
 
 	UINT64 r = 0;
 	Generator MoveGenerator( &Searcher.ThinkingPosition );
+
 	//Searcher.ThinkingPosition = Position;
 	//moveSorter MoveGenerator( &Searcher, 0 );
 

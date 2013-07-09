@@ -44,16 +44,16 @@
 
 int main()
 {
-	timeBeginPeriod( 1 );
-	srand( timeGetTime() );
+	timeBeginPeriod(1);
+	srand(timeGetTime());
 	ClearLog();
-	Log( "Starting up...\n" );
+	Log("Starting up...\n");
 
 	IOHandler IOHandler;
 	IOHandler.Begin();
 
-	Log( "Exiting...\n" );
-	timeEndPeriod( 1 );
+	Log("Exiting...\n");
+	timeEndPeriod(1);
 
 	return 0;
 }

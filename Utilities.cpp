@@ -1,13 +1,15 @@
 #include "Utilities.h"
 
+#ifdef NT_i386
 #ifdef _WIN64
-#pragma intrinsic(_BitScanForward)
-#pragma intrinsic(_BitScanForward64)
-#pragma intrinsic(_BitScanReverse)
-#pragma intrinsic(_BitScanReverse64)
+#  pragma intrinsic(_BitScanForward)
+#  pragma intrinsic(_BitScanForward64)
+#  pragma intrinsic(_BitScanReverse)
+#  pragma intrinsic(_BitScanReverse64)
+#endif
 #else
 #include <sys/time.h>
-static inline unsigned char _BitScanForward(unsigned long* Index, bitboard Mask)
+static inline unsigned char _BitScanForward64(unsigned long* Index, bitboard Mask)
 {
 	bitboard Ret;
 	__asm__
@@ -19,7 +21,7 @@ static inline unsigned char _BitScanForward(unsigned long* Index, bitboard Mask)
 	*Index = (unsigned long)Ret;
 	return Mask ? 1 : 0;
 }
-static inline unsigned char _BitScanReverse(unsigned long* Index, bitboard Mask)
+static inline unsigned char _BitScanReverse64(unsigned long* Index, bitboard Mask)
 {
 	bitboard Ret;
 	__asm__
@@ -36,11 +38,17 @@ unsigned int timeGetTime()
 {
 	struct timeval now;
 	gettimeofday(&now, NULL);
-	return now.tv_usec / 1000;
+	return 1000 * now.tv_sec + now.tv_usec / 1000;
+}
+
+void ZeroMemory(void* Destination, int Length)
+{
+	memset(Destination, 0, Length);
 }
 
 unsigned int timeBeginPeriod(unsigned int) {}
 unsigned int timeEndPeriod(unsigned int) {}
+
 #endif
 #pragma warning( disable: 4996 )
 
@@ -70,11 +78,8 @@ string itoa( bitboard i )
 
 string strlwr( string s )
 {
-	char* buf = new char[ s.length() + 1 ];
-	strcpy( buf, s.c_str() );
-	strlwr( buf );
-	string r = ( string )( buf );
-	delete buf;
+	string r = s;
+	std::transform(r.begin(), r.end(), r.begin(), ::tolower);
 	return r;
 }
 
@@ -95,13 +100,13 @@ string Trim( string s )
 
 square LSBi( register bitboard a )
 {
-#ifdef _WIN64
+//#ifdef _WIN64
 	register unsigned long r;
 	if( _BitScanForward64( &r, a ) )
 		return ( square )r;
 	else
 		return ( square )NullSquare;
-#else
+/*#else
 	unsigned long r;
 	unsigned long* Longs = ( unsigned long* )&a;
 	if( _BitScanForward( &r, Longs[ 0 ] ) )
@@ -110,18 +115,18 @@ square LSBi( register bitboard a )
 		return r + 32;
 	else
 		return NullSquare;
-#endif
+#endif*/
 }
 
 square MSBi( register bitboard a )
 {
-#ifdef _WIN64
+//#ifdef _WIN64
 register unsigned long r;
 if( _BitScanReverse64( &r, a ) )
 	return ( square )r;
 else
 	return NullSquare;
-#else
+/*#else
 	unsigned long r;
 	unsigned long* Longs = ( unsigned long* )&a;
 	if( _BitScanReverse( &r, Longs[ 1 ] ) )
@@ -130,7 +135,7 @@ else
 		return r;
 	else
 		return NullSquare;
-#endif
+#endif*/
 }
 
 const int LSBi8[ 256 ] = { -1, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
@@ -298,9 +303,4 @@ bitboard SquaresOfSameColor( square s )
 	if( Mask[ s ] & LightSquareMask )
 		return LightSquareMask;
 	return DarkSquareMask;
-}
-
-void ZeroMemory(void* Destination, int Length)
-{
-	memset(Destination, 0, Length);
 }
