@@ -353,7 +353,7 @@ type moveGenerator::GetNextPromotion()
 }
 
 LegalMoveGenerator::LegalMoveGenerator( position* Position )
-{
+{	
 	this->Position = Position;
 	this->ToMove = Position->ToMove;
 	this->PinnedPieces = moveGenerator::GetPinnedPieces( Position, ToMove );
@@ -381,7 +381,7 @@ void LegalMoveGenerator::Reset( bitboard TargetMask )
 }
 
 move LegalMoveGenerator::GetNextMove()
-{	
+{
 	while( Moves == 0 )
 	{
 		if( Movers == 0 )
@@ -428,7 +428,7 @@ void LegalMoveGenerator::SetSquareAndMoves()
 	{
 		assert( NextType < 6 );
 		Type = Order[ NextType ]; 
-		TempMovers = Movers & Position->Pieces[ ToMove ][ Type ];
+		TempMovers = Movers & Position->Pieces[ ToMove ][ Type ];	
 		if( TempMovers == 0 )
 			NextType++;
 	}
@@ -439,7 +439,6 @@ void LegalMoveGenerator::SetSquareAndMoves()
 
 	bool IsPinned = PinnedPieces & Mask[ Square ];
 	Moves = GetLegalMoves( Position, Square, Type, ToMove, IsPinned ) & TargetMask;
-
 }
 
 EvasionGenerator::EvasionGenerator( position* Position )

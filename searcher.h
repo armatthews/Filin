@@ -33,7 +33,9 @@ class searcher
 		jmp_buf JumpToSearchStart;
 		jmp_buf JumpToPausePoint;
 
+	public:
 		position RootPosition;
+	private:
 		RootNode Root;
 		line RootPV;
 
@@ -67,20 +69,20 @@ class searcher
 		void RecordKiller( int DistanceFromRoot, move Move );
 		void RecordBestMove( int DepthRemaining, int OriginalAlpha, int Beta, int Score, move BestMove );
 
-		square GetLowestPiece( bitboard& Attackers, color c );
+		square GetLowestPiece( bitboard& Attackers, color c ) const;
 
-		bool TimeOut();
+		bool TimeOut() const;
 
-		bitboard GetAttackers( square Target );
+		bitboard GetAttackers( square Target ) const;
 
 	public:
 		void InitSearch( position* Position, int Depth, int Time );
-		int SEE( move Move );
-		move GetHashMove();
-		move GetKiller( int DistanceFromRoot, int Index );
+		int SEE( move Move ) const;
+		move GetHashMove() const;
+		move GetKiller( int DistanceFromRoot, int Index ) const;
 		void Stop();
 
-		private:
+	private:
 		line PrincipleVariation;
 
 	public:
@@ -89,9 +91,9 @@ class searcher
 
 		void Reset( bool ResetTT );
 		int Search( position* Position, int Depth, int Time );
-		line GetPrincipleVariation();
+		line GetPrincipleVariation() const;
 
-		void TTDebugProbe( zobrist Zobrist );
+		void TTDebugProbe( zobrist Zobrist ) const;
 };
 
 #pragma once

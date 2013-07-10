@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <execinfo.h>
+#include <signal.h>
 #include "IOHandler.h"
 #pragma comment( lib, "winmm.lib" )
 
@@ -41,9 +43,19 @@
 * 5/10 - Implemented pawn hash. Also changed Population function. Since most bitboards are sparse, a naive implementation seems fastest.
 * 7/14 - Optimized Perft function. Added NextType variable to LegalMoveGenerator.
 */
+void handler(int sig) {
+	void* array[10];
+	int size = backtrace(array, 10);
+	cerr << "Error: signal " << sig << ":\n";
+	backtrace_symbols_fd(array, size, STDERR_FILENO);
+	exit(1);
+}
 
 int main()
 {
+	cerr << "Filin v0.1" << endl;
+	signal(SIGSEGV, handler);
+
 	timeBeginPeriod(1);
 	srand(timeGetTime());
 	ClearLog();

@@ -12,6 +12,8 @@ void plyInfo::operator=( const plyInfo& o ) { InCheck = o.InCheck; memcpy( &Kill
 
 searcher::searcher()
 {
+	Root.setSearcher(this);
+
 	TranspositionTable.Resize( 256 );
 
 	//OpeningBook.OpenBook( "NewBook.txt" );
@@ -50,7 +52,7 @@ void searcher::Stop()
 	SoftTimeOutTime = HardTimeOutTime = 0;
 }
 
-move searcher::GetHashMove()
+move searcher::GetHashMove() const
 {
 	return TranspositionTable.BestMove( ThinkingPosition.Zobrist );
 }
@@ -77,7 +79,7 @@ void searcher::RecordKiller( int DistanceFromRoot, move Move )
 	PlyInfo[ DistanceFromRoot ].Killers[ 0 ] = Move;
 }
 
-move searcher::GetKiller( int DistanceFromRoot, int Index )
+move searcher::GetKiller( int DistanceFromRoot, int Index ) const
 {
 	if( DistanceFromRoot < PlyInfo.size() && Index < NUM_KILLERS )
 		return PlyInfo[ DistanceFromRoot ].Killers[ Index ];
@@ -85,7 +87,7 @@ move searcher::GetKiller( int DistanceFromRoot, int Index )
 		return NullMove;
 }
 
-square searcher::GetLowestPiece( bitboard& Attackers, color c )
+square searcher::GetLowestPiece( bitboard& Attackers, color c ) const
 {
 	if( ( Attackers & ThinkingPosition.AllPieces[ c ] ) == 0 )
 		return NullSquare;
@@ -102,7 +104,7 @@ square searcher::GetLowestPiece( bitboard& Attackers, color c )
 	return LSBi( LowestPiece );
 }
 
-bitboard searcher::GetAttackers( square Target )
+bitboard searcher::GetAttackers( square Target ) const
 {
 	bitboard r = 0;
 
@@ -115,7 +117,7 @@ bitboard searcher::GetAttackers( square Target )
 	bitboard RookMoves = moveGenerator::GetRookMoves( &ThinkingPosition, Target, Empty );
 	bitboard KingMoves = moveGenerator::GetKingMoves( &ThinkingPosition, Target, Empty );
 
-	bitboard (&Pieces)[ 2 ][ 6 ] = ThinkingPosition.Pieces;
+	const bitboard (&Pieces)[ 2 ][ 6 ] = ThinkingPosition.Pieces;
 
 	for( color c = White; c <= Black; c++ )
 	{
@@ -129,7 +131,7 @@ bitboard searcher::GetAttackers( square Target )
 	return r;
 }
 
-int searcher::SEE( move Move )
+int searcher::SEE( move Move ) const
 {
 	int ValueList[ 32 ];
 	int NumberOfCaptures = 1;
@@ -214,6 +216,7 @@ void searcher::InitSearch( position* Position, int Depth, int Time )
 	}
 
 	TranspositionTable.NextGeneration();
+
 }
 
 int searcher::Iterate( int Depth )
@@ -225,7 +228,6 @@ int searcher::Iterate( int Depth )
 	int FailLows = 0;
 	int FailHighs = 0;
 
-	Root.Searcher = this;
 	Root.ParentPV = &RootPV;
 	Root.Initialize();
 
@@ -288,7 +290,7 @@ int searcher::Iterate( int Depth )
 	return Score; 
 }
 
-line searcher::GetPrincipleVariation()
+line searcher::GetPrincipleVariation() const
 {
 	return RootPV;
 }
@@ -318,7 +320,7 @@ int searcher::Search( position* Position, int Depth, int Time )
 	return Score;
 }
 
-bool searcher::TimeOut()
+bool searcher::TimeOut() const
 {
 	DWORD Time = timeGetTime();
 	if( Time >= SoftTimeOutTime )
@@ -339,7 +341,7 @@ bool searcher::CheckBook( position* Position, int Depth )
 	return true;
 }
 
-void searcher::TTDebugProbe( zobrist Zobrist )
+void searcher::TTDebugProbe( zobrist Zobrist ) const
 {
 	TranspositionTable.DebugProbe( Zobrist );
 }

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "Utilities.h"
 
 class position;
@@ -21,7 +22,6 @@ Fifty (7)
 17 bits
 */
 
-#pragma pack(1)
 class move
 {
 public:

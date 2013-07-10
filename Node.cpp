@@ -21,6 +21,16 @@ void Node::Reset()
 	LegalMovesTried = 0;
 }
 
+void Node::setSearcher(searcher* Searcher)
+{
+	this->Searcher = Searcher;
+}
+
+searcher* Node::getSearcher()
+{
+	return this->Searcher;
+}
+
 Node Node::CreateChild()
 {
 	Node Child;
@@ -270,11 +280,12 @@ int Node::Quiescent()
 
 void RootNode::Initialize()
 {
+	cerr << "Initializing RootNode for position: " << Searcher->ThinkingPosition.FEN() << endl;
 	move Move;
 	moveSorter Sorter( Searcher, 0 );
 
 	MoveList.clear();
-	for( Move = Sorter.GetNextMove(); Move != NullMove; Move = Sorter.GetNextMove() )
+	for( Move = Sorter.GetNextMove(); Move != NullMove; Move = Sorter.GetNextMove() )	
 		MoveList.push_back( Move );
 
 	CurrentNodeCounts.resize( MoveList.size(), 0 );
@@ -286,7 +297,6 @@ void RootNode::Initialize()
 
 	Alpha = OriginalAlpha = -INFINITE;
 	Beta = INFINITE;
-
 }
 
 void RootNode::SwapMoves( unsigned int i, unsigned int j )

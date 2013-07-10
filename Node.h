@@ -11,7 +11,9 @@ public:
 	int Alpha, Beta, OriginalAlpha;
 	line LocalPV;
 	line* ParentPV;
+protected:
 	searcher* Searcher;
+public:
 	int LegalMovesTried;
 	bool AllowNullMove;
 	bool MateThreat;
@@ -32,6 +34,9 @@ public:
 	virtual int Quiescent();
 
 	bool IsSane();
+
+	searcher* getSearcher();
+	void setSearcher(searcher* Searcher);
 };
 
 class RootNode : public Node

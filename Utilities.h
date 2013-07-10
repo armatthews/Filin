@@ -16,7 +16,8 @@
 #include "Log.h"
 #undef assert
 #ifdef _DEBUG
-#define assert( _Expression ) if( !( _Expression ) ) { std::string s = string( "Assertion failed in " ) + __FILE__ + string( " on line " ) + itoa( __LINE__ ) + ".\n"; Log( s ); cout << s; _wassert( _CRT_WIDE( #_Expression ), _CRT_WIDE( __FILE__ ), __LINE__ ); }
+//#define assert( _Expression ) if( !( _Expression ) ) { std::string s = string( "Assertion failed in " ) + __FILE__ + string( " on line " ) + itoa( __LINE__ ) + ".\n"; Log( s ); cout << s; _wassert( _CRT_WIDE( #_Expression ), _CRT_WIDE( __FILE__ ), __LINE__ ); }
+#include <assert.h>
 #else
 #define assert( _Expression )
 #endif
@@ -24,12 +25,16 @@
 using std::string;
 using std::stringstream;
 using std::cout;
+using std::cerr;
 using std::cin;
 using std::vector;
 using std::map;
 using std::fstream;
 using std::ifstream;
 using std::ofstream;
+using std::hex;
+using std::dec;
+using std::endl;
 
 
 #ifndef max

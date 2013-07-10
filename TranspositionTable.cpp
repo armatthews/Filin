@@ -25,7 +25,6 @@ transpositionTable::transpositionTable()
 {
 	Generation = 0;
 	Data = NULL;
-	Resize( 0 );
 }
 
 transpositionTable::transpositionTable( unsigned int Size )
@@ -37,7 +36,9 @@ transpositionTable::transpositionTable( unsigned int Size )
 
 transpositionTable::~transpositionTable()
 {
-	delete[] Data;
+	if(Data != NULL)
+		delete[] Data;
+	Data = NULL;
 }
 
 transpositionTable::transpositionTable( const transpositionTable& o )
@@ -46,13 +47,14 @@ transpositionTable::transpositionTable( const transpositionTable& o )
 	NumberOfEntries = o.NumberOfEntries;
 	IndexMask = o.IndexMask;
 
-
+	assert( NumberOfEntries > 0 );
 	Data = new element[ 3 * NumberOfEntries ];
 	memcpy( Data, o.Data, 3 * NumberOfEntries * sizeof( element ) );
 }
 
 bool transpositionTable::operator=( const transpositionTable& o )
 {
+	assert(o.NumberOfEntries > 0);
 	Generation = o.Generation;
 	NumberOfEntries = o.NumberOfEntries;
 	IndexMask = o.IndexMask;
@@ -76,6 +78,7 @@ void transpositionTable::Resize( unsigned int Size )
 	NumberOfEntries /= 2;
 	if( NumberOfEntries < 1 ) NumberOfEntries = 1;
 
+	assert( NumberOfEntries > 0);
 	Data = new element[ 3 * NumberOfEntries ];
 	this->NumberOfEntries = NumberOfEntries;
 	this->IndexMask = this->NumberOfEntries - 1;
@@ -191,7 +194,7 @@ void transpositionTable::Store( zobrist Zobrist, int DistanceFromRoot, int Depth
 	assert( Replace->BestMove == Move );
 	assert( Replace->Key == Zobrist );
 
-	assert( DepthRemaining >= 0 )
+	assert( DepthRemaining >= 0 );
 }
 
 void transpositionTable::StorePV( position* Position, line PV, int DepthRemaining, int Value )
