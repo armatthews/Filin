@@ -279,8 +279,7 @@ int Node::Quiescent()
 }
 
 void RootNode::Initialize()
-{
-	cerr << "Initializing RootNode for position: " << Searcher->ThinkingPosition.FEN() << endl;
+{	
 	move Move;
 	moveSorter Sorter( Searcher, 0 );
 
