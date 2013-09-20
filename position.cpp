@@ -57,6 +57,8 @@ bool position::SetUpPosition( string FEN )
 	for( int BoardSquare = 0; BoardSquare < 64; BoardSquare++ )
 	{
 		square s = MakeSquare( File( BoardSquare ), 7 - Rank( BoardSquare ) );
+		if( i >= FEN.length() )
+			return false;
 
 		switch( FEN[ i ] )
 		{
@@ -131,18 +133,20 @@ bool position::SetUpPosition( string FEN )
 
 		if( BoardSquare % 8 == 7 && BoardSquare != 63 )
 		{
-			if( FEN[ i ] != '/' )
-		return false;
+			if( i >= FEN.length() || FEN[ i ] != '/' )
+				return false;
 			i++;
 		}
 	}
 
-	if( FEN[ i ] != ' ' )
+	if( i >= FEN.length() || FEN[ i ] != ' ' )
 		return false;
 
 	i++;
 
-	if( FEN[ i ] == 'w' )
+	if( i >= FEN.length() )
+		return false;
+	else if( FEN[ i ] == 'w' )
 	{
 		ToMove = White;
 		Enemy = Black;
@@ -158,9 +162,12 @@ bool position::SetUpPosition( string FEN )
 
 	i++;
 
-	if( FEN[ i ] != ' ' )
+	if( i >= FEN.length() || FEN[ i ] != ' ' )
 		return false;
 	i++;
+
+	if( i >= FEN.length() )
+		return false;
 
 	if( FEN[ i ] != '-' )
 	{
@@ -187,16 +194,25 @@ bool position::SetUpPosition( string FEN )
 
 	Zobrist ^= ZK::Castling[ Castling & 15 ];
 
-	if( FEN[ i ] != ' ' )
-		return false;
+	if( i >= FEN.length() || FEN[ i ] != ' ' )
+	{
+		EPSquare = NullSquare;
+		return true;
+	}
 	i++;
+
+	if( i >= FEN.length() )
+	{
+		EPSquare = NullSquare;
+		return true;
+	}
 
 	if( FEN[ i ] != '-' )
 	{
 		char file = FEN[ i++ ];
 		char rank = FEN[ i++ ];
 
-		if( rank < '1'|| rank > '8' )
+		if( rank != '3' && rank != '6' )
 			return false;
 
 		if( ( file < 'a' || file > 'h' ) && ( file < 'A' && file > 'H' ) )
@@ -218,7 +234,7 @@ bool position::SetUpPosition( string FEN )
 	if( EPSquare != NullSquare )
 		Zobrist ^= ZK::EPKeys[ EPSquare ];
 
-	if( FEN[ i ] != ' ' )
+	if( i >= FEN.length() || FEN[ i ] != ' ' )
 	{
 		Fifty = 0;
 		return i;
@@ -226,7 +242,7 @@ bool position::SetUpPosition( string FEN )
 	i++;
 
 	char Buffer[ 8 ] = { 0 };
-	while( FEN[ i ] != ' ' )
+	while( i < FEN.length() && FEN[ i ] != ' ' )
 	{
 		size_t Next = strlen( Buffer );
 		if( Next >= 7 )
@@ -238,7 +254,20 @@ bool position::SetUpPosition( string FEN )
 	i++;
 
 	Fifty = atoi( Buffer );
-	MoveNumber = 1;
+
+	Buffer[ 0 ] = 0;
+	while( i < FEN.length() && FEN[ i ] != ' ' )
+	{
+		size_t Next = strlen( Buffer );
+		if( Next >= 7 )
+			return false;
+		Buffer[ Next ] = FEN[ i ];
+		Buffer[ Next + 1 ] = 0;
+		i++;
+	}
+	i++;
+
+	MoveNumber = atoi( Buffer );
 
 	return true;
 }
