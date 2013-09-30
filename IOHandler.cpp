@@ -51,7 +51,7 @@ inputStatus IOHandler::HandleInput( string s )
 
 	move InputMove = move( s, &Position );
 	if( InputMove == NullMove )
-		InputMove = move( s );
+		InputMove = move( s );	
 
 	if( InputMove != NullMove )
 	{
@@ -248,7 +248,7 @@ inputStatus IOHandler::RunCommand( string Command, vector< string >& Parameters 
 		cout << Position.toString() << "\n";
 	else if( Command == "st" )
 	{
-			Preferences.TimeSetting = atoi( Parameters[ 0 ].c_str() ) * 1000;
+			Preferences.TimeSetting = atof( Parameters[ 0 ].c_str() ) * 1000;
 			Preferences.TimeLimited = true;
 	}
 	else if( Command == "stats" )
@@ -289,18 +289,28 @@ inputStatus IOHandler::ToggleOption( bool* Option, string State )
 	return INPUT_HANDLED;
 }
 
-inputStatus IOHandler::ListMoves()
+vector<move> IOHandler::GetMoveList()
 {
 	Searcher.ThinkingPosition = Position;
 	moveSorter MoveGenerator( &Searcher, 0 );
 
-	int i = 0;
 	move Move;
-	while( ( Move = MoveGenerator.GetNextMove() ) != NullMove )
+	vector<move> MoveList;
+	while( ( Move = MoveGenerator.GetNextMove() ) != NullMove ) {	
+		MoveList.push_back( Move );
+	}
+	return MoveList;
+}
+
+
+inputStatus IOHandler::ListMoves()
+{
+	vector<move> MoveList = GetMoveList();
+	for( int i = 0; i < MoveList.size(); i++ )
 	{
-		i++;
+		move Move = MoveList[ i ];
 		cout << Move.toString( &Position ) << " ";
-		if( i % 5 == 0 )
+		if( i % 5 == 4 )
 			cout << "\n";
 	}
 
@@ -339,9 +349,6 @@ UINT64 IOHandler::Perft( unsigned int d )
 	UINT64 r = 0;
 	Generator MoveGenerator( &Searcher.ThinkingPosition );
 
-	//Searcher.ThinkingPosition = Position;
-	//moveSorter MoveGenerator( &Searcher, 0 );
-
 	if( d == 1 )
 	{
 		move Move;
@@ -354,7 +361,7 @@ UINT64 IOHandler::Perft( unsigned int d )
 	while( ( Move = MoveGenerator.GetNextMove() ) != NullMove )
 	{
 		Searcher.ThinkingPosition.MakeMove( Move );
-/*#ifdef _DEBUG
+#ifdef _DEBUG
 		if( Position.InCheck( Position.Enemy ) )
 		{
 			Position.TakeBack();
@@ -364,10 +371,9 @@ UINT64 IOHandler::Perft( unsigned int d )
 			assert( 0 );
 			system( "PAUSE" );
 		}
-#endif*/
+#endif
 		r += Perft( d - 1 );
-		Searcher.ThinkingPosition.TakeBack();
-		//Searcher.ThinkingPosition = Position;
+		Searcher.ThinkingPosition.TakeBack();	
 	}
 
 	return r;
@@ -562,6 +568,9 @@ bool IOHandler::GameIsOver()
 
 inputStatus IOHandler::Go()
 {
+	if( GameIsOver() )
+		return INPUT_HANDLED;
+
 	int Score = Searcher.Search( &Position, 0, Preferences.TimeSetting );
 
 	if( Searcher.GetPrincipleVariation().size() == 0 )
@@ -573,8 +582,6 @@ inputStatus IOHandler::Go()
 	move Move = Searcher.GetPrincipleVariation()[ 0 ];
 	cout << "move " << Move.toString( &Position ) << "\n";
 	Position.MakeMove( Move );
-	if( GameIsOver() )
-		Preferences.FilinsColor = Empty;
 
 	return INPUT_HANDLED;
 }

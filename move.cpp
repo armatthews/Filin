@@ -423,10 +423,9 @@ string move::toString( position* Position ) const
 		return "Pass";
 
 	assert( From() != NullSquare && To() != NullSquare );
-
 	type Type = Position->GetPieceType( From(), Position->ToMove );
 	assert( Type != Empty );
-
+	
 	bool EP = false;
 	bool Checks = DoesMoveCheck( Position );
 	bool Capture = ( Position->GetPieceColor( To() ) != Empty );
@@ -442,7 +441,6 @@ string move::toString( position* Position ) const
 	bool ShowRank = false;
 
 	vector< square > OtherPieces = PiecesOfTypeThatCanMoveToSquare( Position, Type, To() );
-
 	if( OtherPieces.size() > 1 )
 	{
 		bool ResolvedByFile = CanDistinguishByFile( &OtherPieces );

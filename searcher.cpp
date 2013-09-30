@@ -304,7 +304,7 @@ int searcher::Search( position* Position, int Depth, int Time )
 
 	InitSearch( Position, Depth, Time );
 
-	if( CheckBook( Position ) )
+	if( CheckBook( &RootPosition ) )
 		return 0;
 
 	if( setjmp( JumpToSearchStart ) == 0 )

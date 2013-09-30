@@ -34,8 +34,8 @@ public:
 	transpositionTable( const transpositionTable& o );
 	bool operator=( const transpositionTable& o );
 
-	BoundType Probe( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, int& Alpha, int Beta );
-	move BestMove( zobrist Zobrist );
+	BoundType Probe( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, int& Alpha, int Beta ) const;
+	move BestMove( zobrist Zobrist ) const;
 	int StartDepth( zobrist Zobrist, int& StartValue );
 	void Store( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, BoundType Type, int Value, move Move );
 	void StorePV( position* Position, line PV, int DepthRemaining, int Value );

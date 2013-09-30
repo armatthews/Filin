@@ -43,7 +43,8 @@ public:
 	~moveSorter();
 
 	virtual move GetNextMove();
-	phase CurrentPhase();
+	phase GetCurrentPhase();
+	int GetMovesSorted();
 protected:
 	void PrepareCaptures();
 	static void Sort( moveList* MoveList, scoreList* ScoreList );

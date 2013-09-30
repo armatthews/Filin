@@ -97,7 +97,7 @@ void transpositionTable::Clear()
 		Data[ i ].Reset();
 }
 
-move transpositionTable::BestMove( zobrist Zobrist )
+move transpositionTable::BestMove( zobrist Zobrist ) const
 {
 	element* Element;
 
@@ -111,8 +111,8 @@ move transpositionTable::BestMove( zobrist Zobrist )
 	return NullMove;
 }
 
-BoundType transpositionTable::Probe( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, int& Alpha, int Beta )
-{
+BoundType transpositionTable::Probe( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, int& Alpha, int Beta ) const
+{	
 	element* Element = NULL;
 	for( int i = 0; i < 3; i++ )
 	{

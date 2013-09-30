@@ -33,9 +33,14 @@ moveSorter::~moveSorter()
 	MoveGenerator = NULL;
 }
 
-phase moveSorter::CurrentPhase()
+phase moveSorter::GetCurrentPhase()
 {
 	return Phase;
+}
+
+int moveSorter::GetMovesSorted()
+{
+	return MovesSorted;
 }
 
 void moveSorter::AdvancePhase()
