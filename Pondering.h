@@ -16,8 +16,13 @@ namespace pondering
 
 	extern bool PonderingEnabled;
 	extern bool Pondering;
+#ifndef __WIN32__
+	extern pthread_attr_t PonderThread;
+	extern pthread_t PonderThreadID;
+#else
 	extern HANDLE PonderThread;
 	extern DWORD PonderThreadID;
+#endif
 	extern move PonderingMove;
 	extern DWORD PonderedTime;
 
