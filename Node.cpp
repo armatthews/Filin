@@ -2,6 +2,12 @@
 #include "moveSorter.h"
 #include "searcher.h"
 
+const bool UsePVS = true;
+const bool UseCheckExtension = true;
+const bool UseLMR = true;
+const bool UseNullMove = true;
+const bool UseTranspositionTable = true;
+
 bool Node::IsPVNode()
 {
 	int a = Searcher->Root.OriginalAlpha;
@@ -99,18 +105,21 @@ bool Node::TryNullMove()
 	return false;
 }
 
-int Node::CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhase )
+int Node::CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhase, int MovesExamined )
 {
 	int Extensions = Ply( 0 );
 	bool NowInCheck = Searcher->ThinkingPosition.InCheck( Searcher->ThinkingPosition.ToMove );
 	if( NowInCheck )
 	{
-		Extensions += Ply( 1 );
-		Searcher->Statistics.CheckExtensionsDone++;
+		if( UseCheckExtension )
+		{
+			Extensions += Ply( 1 );
+			Searcher->Statistics.CheckExtensionsDone++;
+		}
 	}
-	else
+	else if( UseLMR )
 	{
-		if( MoveSorterPhase > KillerMovesPhase )
+		if( Alpha != Beta - 1 && MoveSorterPhase > KillerMovesPhase )
 		{
 			if( DepthRemaining >= Ply( 3 ) && !WasInCheck && Move.Promote() == Empty )
 			{
@@ -120,6 +129,7 @@ int Node::CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhas
 				bitboard PawnIsPassed = IsEmpty( PawnPassedMask[ Enemy ][ Move.To() ] & Searcher->ThinkingPosition.Pieces[ ToMove ][ Pawn ] ); // TODO: Double check this.
 				if( !MoverIsPawn || !PawnIsPassed )
 				{
+					int Eval = Searcher->Evaluator.Evaluate( &Searcher->ThinkingPosition, Searcher->RootPosition.Castling, Alpha, Beta );
 					Extensions -= Ply( 1 );
 					Searcher->Statistics.LateMoveReductionsDone++;
 				}
@@ -147,12 +157,18 @@ int Node::AlphaBeta()
 	if( Searcher->ThinkingPosition.IsDraw( 2 ) )
 		return DRAWSCORE;
 
-	BoundType TTProbeType = Searcher->TranspositionTable.Probe( Searcher->ThinkingPosition.Zobrist, DistanceFromRoot, DepthRemaining, Alpha, Beta );
-	if( TTProbeType != NONE )
-		return Alpha;
+	if( UseTranspositionTable )
+	{
+		BoundType TTProbeType = Searcher->TranspositionTable.Probe( Searcher->ThinkingPosition.Zobrist, DistanceFromRoot, DepthRemaining, Alpha, Beta );
+		if( TTProbeType != NONE )
+			return Alpha;
+	}
 
-	if( TryNullMove() )
-		return Beta;
+	if( UseNullMove )
+	{
+		if( TryNullMove() )
+			return Beta;
+	}
 
 	moveSorter MoveSorter( this->Searcher, DistanceFromRoot );
 	move Move;
@@ -162,18 +178,27 @@ int Node::AlphaBeta()
 
 	int LocalBeta = Beta;
 
+	bool debug = false;
+	if((Searcher->Statistics.NodesVisited & 0xFFF) == 0 && false)
+	{
+		debug = true;
+		cerr << Searcher->ThinkingPosition.FEN() << endl;
+	}
+
 	for( Move = MoveSorter.GetNextMove(); Move != NullMove; Move = MoveSorter.GetNextMove() )
 	{
+		if(debug)
+			cerr << Move.toString(&Searcher->ThinkingPosition) << "\t" << MoveSorter.GetCurrentPhase() << endl;
 		Searcher->MakeMove( Move );
 		LocalPV.clear();
 
 		int Extensions = 0;
-		Extensions += CalculateExtensions( Move, WasInCheck, MoveSorter.CurrentPhase() );
+		Extensions += CalculateExtensions( Move, WasInCheck, MoveSorter.GetCurrentPhase(), LegalMovesTried  );
 
 		Node Child = CreateChild();
 		Child.DepthRemaining += Extensions;
-		//if( LegalMovesTried )
-			//Child.Alpha = Child.OriginalAlpha = -Alpha - 1;
+		if( UsePVS && LegalMovesTried )
+			Child.Alpha = Child.OriginalAlpha = -Alpha - 1;
 		val = -Child.AlphaBeta();
 
 		if( val > Alpha && Extensions < 0 )
@@ -185,17 +210,17 @@ int Node::AlphaBeta()
 			Child = CreateChild();
 			Child.DepthRemaining += Extensions;
 
-			//if( LegalMovesTried )
-			//	Child.Alpha = Child.OriginalAlpha = -Alpha - 1;
+			if( UsePVS && LegalMovesTried )
+				Child.Alpha = Child.OriginalAlpha = -Alpha - 1;
 			val = -Child.AlphaBeta();
 		}
 
-		/*if( LegalMovesTried && val > Alpha && val < Beta )
+		if( UsePVS && LegalMovesTried && val > Alpha && val < Beta )
 		{
 			Child = CreateChild();
 			Child.DepthRemaining += Extensions;
 			val = -Child.AlphaBeta();
-		}*/
+		}
 
 		Searcher->TakeBack();		
 		LegalMovesTried++;
@@ -213,14 +238,19 @@ int Node::AlphaBeta()
 				return Beta;
 			}
 
-			UpdateParentPV( BestMove ); // TODO: This should be moved to the LegalMovesTried -> Alpha > OrignalAlpha block.
-										// The reason why moving this doesn't work right now is because we lose the LocalPV variable when the loop goes to the next iteration.
-										// Hence, only the first move of the PV actually shows up.
+			UpdateParentPV( BestMove );	// TODO: This should be moved to the LegalMovesTried -> Alpha > OrignalAlpha block.
+							// The reason why moving this doesn't work right now is because we lose the LocalP
+							//  variable when the loop goes to the next iteration.
+							// Hence, only the first move of the PV actually shows up.
 		}
 	}
+	if(debug)
+		cerr << "======" << endl;
 
 	if( LegalMovesTried )
 	{
+		assert( Alpha >= OriginalAlpha);
+
 		if( Alpha != OriginalAlpha )
 			Searcher->TranspositionTable.Store( Searcher->ThinkingPosition.Zobrist, DistanceFromRoot, DepthRemaining, EXACT, Alpha, BestMove );
 		else
@@ -374,7 +404,7 @@ int RootNode::AlphaBeta()
 			Phase = ( SEE >= 0 ) ? GoodCapturesPhase : BadCapturesPhase;
 		if( i == 0 )
 			Phase = HashMovePhase;
-		int Extensions = CalculateExtensions( Move, WasInCheck, Phase );
+		int Extensions = CalculateExtensions( Move, WasInCheck, Phase, i );
 		Child.DepthRemaining += Extensions;
 
 		//if( i != 0 )

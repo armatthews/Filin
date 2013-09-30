@@ -27,7 +27,7 @@ public:
 	bool TryNullMove();
 	void DoIID();
 	bool DeltaPrune( int Eval );
-	int CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhase );
+	int CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhase, int MovesExamined );
 
 	virtual void UpdateParentPV( move Move );
 	virtual int AlphaBeta();
