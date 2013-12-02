@@ -98,7 +98,7 @@ bool Node::TryNullMove()
 	if( NullValue >= Beta )
 	{
 		Searcher->Statistics.NullMoveSuccesses++;
-		//Alpha = NullValue;
+		Alpha = NullValue;
 		return true;
 	}
 
@@ -154,10 +154,10 @@ int Node::AlphaBeta()
 	if( ( ( ++Searcher->Statistics.NodesVisited ) & 0x3FF ) == 0 )
 		Searcher->TimeOut();
 
-	if( Searcher->ThinkingPosition.IsDraw( 2 ) )
+	if( DistanceFromRoot > 0 && Searcher->ThinkingPosition.IsDraw( 2 ) )
 		return DRAWSCORE;
 
-	if( UseTranspositionTable )
+	if( DistanceFromRoot > 0 && UseTranspositionTable )
 	{
 		BoundType TTProbeType = Searcher->TranspositionTable.Probe( Searcher->ThinkingPosition.Zobrist, DistanceFromRoot, DepthRemaining, Alpha, Beta );
 		if( TTProbeType != NONE )
@@ -167,8 +167,14 @@ int Node::AlphaBeta()
 	if( UseNullMove )
 	{
 		if( TryNullMove() )
-			return Beta;
+		{
+			assert( Alpha >= Beta );
+			Searcher->TranspositionTable.Store( Searcher->ThinkingPosition.Zobrist, DistanceFromRoot, DepthRemaining, LOWER, Alpha, NullMove );
+			return Alpha;
+		}
 	}
+
+	// IID?
 
 	moveSorter MoveSorter( this->Searcher, DistanceFromRoot );
 	move Move;
@@ -194,6 +200,27 @@ int Node::AlphaBeta()
 
 		int Extensions = 0;
 		Extensions += CalculateExtensions( Move, WasInCheck, MoveSorter.GetCurrentPhase(), LegalMovesTried  );
+
+		// Don't prune if in check, but Extensions == 0 implies that we're not in check.
+		if( MoveSorter.GetCurrentPhase() >= NonCapturesPhase && Extensions <= 0 && LegalMovesTried != 0 )
+		{
+			const int PruningMargin[8] = { 0, 120, 120, 310, 310, 400, 400, 500 };
+			const int PruningDepth = 5;
+			// Futility
+			if( DepthRemaining < PruningDepth && Searcher->Evaluator.PieceMaterial(&Searcher->ThinkingPosition) + PruningMargin[DepthRemaining] <= Alpha )
+			{
+				color PrevToMove = Searcher->ThinkingPosition.Enemy;
+				color PrevEnemy = Searcher->ThinkingPosition.ToMove;
+				type Mover = Searcher->ThinkingPosition.GetPieceType(Move.To(), PrevToMove);
+				const bool Passed = IsEmpty( PawnPassedMask[ PrevToMove ][ Move.To() ] & Searcher->ThinkingPosition.Pieces[ PrevEnemy ][ Pawn ] );
+				if( Mover != Pawn || !Passed || MyRank[ PrevToMove ][ Rank(Move.To()) ] < RANK6 )
+				{
+					Searcher->TakeBack();
+					continue;
+				}
+			}
+		}
+
 
 		Node Child = CreateChild();
 		Child.DepthRemaining += Extensions;
