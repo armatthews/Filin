@@ -284,7 +284,6 @@ int searcher::Iterate( int Depth )
 		assert( ThinkingPosition.Zobrist == RootPosition.Zobrist );
 		assert( TTScore == Score );
 		assert( PVMove == TranspositionTable.BestMove( RootPosition.Zobrist ) );*/
-
 	}
 
 	return Score; 
@@ -320,7 +319,7 @@ int searcher::Search( position* Position, int Depth, int Time )
 	return Score;
 }
 
-bool searcher::TimeOut() const
+bool searcher::TimeOut()
 {
 	DWORD Time = timeGetTime();
 	if( Time >= SoftTimeOutTime )

@@ -1,5 +1,6 @@
 #ifndef __WIN32__
 #include <pthread.h>
+#include <unistd.h>
 #endif
 #include "Pondering.h"
 
@@ -20,7 +21,7 @@ namespace pondering
 
 	ponderInfo PonderInfo;
 
-	DWORD WINAPI Ponder( void* Info )
+	THREADRETTYPE WINAPI Ponder( void* Info )
 	{	
 		PonderedTime = 0;
 		DWORD Start = timeGetTime();
@@ -49,7 +50,7 @@ namespace pondering
 			if( PV.size() == 0 )
 			{
 				Pondering = false;
-				return 0;
+				return THREADRETVALUE;
 			}
 			PonderMove = PV[ 0 ];	
 		}	
@@ -62,7 +63,7 @@ namespace pondering
 		string EndFEN = Position.FEN();
 		assert( StartFEN == EndFEN );
 		Pondering = false;
-		return 0;
+		return THREADRETVALUE;
 	}
 
 	void StopPondering()
@@ -100,7 +101,7 @@ namespace pondering
 			pthread_attr_init(&PonderThread);
 			//pthread_attr_setstacksize(&PonderThread, 120*1024);
 			//pthread_attr_setdetachstate(&PonderThread, PTHREAD_CREATE_DETACHED);
-			pthread_create( &PonderThreadID, &PonderThread, Ponder, &PonderInfo );
+			pthread_create( &PonderThreadID, &PonderThread, Ponder, (void*)&PonderInfo );
 		#else
 			PonderThread = CreateThread( NULL, 0, Ponder, &PonderInfo, 0, &PonderThreadID );
 		#endif	

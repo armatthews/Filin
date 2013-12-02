@@ -270,7 +270,7 @@ inputStatus IOHandler::RunCommand( string Command, vector< string >& Parameters 
 	else if( Command == "xboard" )
 		;
 	else if( Command == "zobrist" )
-		printf( "0x%I64x\n", Position.Zobrist );
+		printf( "0x%llx\n", Position.Zobrist );
 	else
 		return INPUT_UNKNOWN;
 
@@ -306,6 +306,12 @@ vector<move> IOHandler::GetMoveList()
 inputStatus IOHandler::ListMoves()
 {
 	vector<move> MoveList = GetMoveList();
+	if( MoveList.size() == 0 )
+	{
+		cout << "No moves possible!\n\n";
+		return INPUT_HANDLED;
+	}
+
 	for( int i = 0; i < MoveList.size(); i++ )
 	{
 		move Move = MoveList[ i ];
@@ -313,12 +319,7 @@ inputStatus IOHandler::ListMoves()
 		if( i % 5 == 4 )
 			cout << "\n";
 	}
-
-	if( i == 0 )
-		cout << "No moves possible!\n";
-
 	cout << "\n";
-
 	return INPUT_HANDLED;
 }
 

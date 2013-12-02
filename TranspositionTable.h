@@ -43,7 +43,7 @@ public:
 	void Resize( unsigned int Size );
 	void Clear();
 	void NextGeneration();
-	void DebugProbe( zobrist Zobrist );
+	void DebugProbe( zobrist Zobrist ) const;
 };
 
 #pragma once

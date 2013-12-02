@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <execinfo.h>
 #include <signal.h>
+#include <unistd.h>
 #include "IOHandler.h"
 #pragma comment( lib, "winmm.lib" )
 

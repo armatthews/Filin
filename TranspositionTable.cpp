@@ -215,7 +215,7 @@ void transpositionTable::StorePV( position* Position, line PV, int DepthRemainin
 		Position->TakeBack();
 }
 
-void transpositionTable::DebugProbe( zobrist Zobrist )
+void transpositionTable::DebugProbe( zobrist Zobrist ) const
 {
 	printf( "Looking up 0x%I64x. Mask is 0x%I64x.\n Transposition table dump for bin %I64x:\n", Zobrist, IndexMask, ( Zobrist & IndexMask ) );
 

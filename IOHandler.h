@@ -27,7 +27,7 @@ protected:
 	inputStatus HandleInput( string s );
 	inputStatus RunCommand( string Command, vector< string >& Parameters );
 	bool GameIsOver();
-	std::vector<move> IOHandler::GetMoveList();
+	std::vector<move> GetMoveList();
 
 	inputStatus EmitFeatures();
 	inputStatus Go();

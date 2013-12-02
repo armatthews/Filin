@@ -157,8 +157,9 @@ void TestSuite::Run()
 		ostringstream output;
 		streambuf* OldCout( cout.rdbuf() );
 		cout.rdbuf( output.rdbuf() );
+		position Position = Positions[ i ].GetPosition();
 
-		Searcher.Search( &Positions[ i ].GetPosition(), 0, TimeLimit );
+		Searcher.Search( &Position, 0, TimeLimit );
 
 		string Output = output.str();
 		cout.rdbuf( OldCout );
@@ -175,10 +176,10 @@ void TestSuite::Run()
 			else
 				cout << "X" << " ";
 
-			cout << Correct << " / " << i + 1 << "\t" << Move.toString( &Positions[ i ].GetPosition() ) << "\t";
+			cout << Correct << " / " << i + 1 << "\t" << Move.toString( &Position ) << "\t";
 			vector< move > BestMoves = Positions[ i ].GetBestMoves();
 			for( unsigned int j = 0; j < BestMoves.size(); j++ )
-				cout << BestMoves[ j ].toString( &Positions[ i ].GetPosition() ) << " ";
+				cout << BestMoves[ j ].toString( &Position ) << " ";
 			cout << "\n";
 		}
 		else

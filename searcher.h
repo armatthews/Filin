@@ -71,7 +71,7 @@ class searcher
 
 		square GetLowestPiece( bitboard& Attackers, color c ) const;
 
-		bool TimeOut() const;
+		bool TimeOut();
 
 		bitboard GetAttackers( square Target ) const;
 

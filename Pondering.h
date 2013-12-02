@@ -1,7 +1,15 @@
 #include "Utilities.h"
 #include "searcher.h"
 #include "position.h"
+#ifndef __WIN32__
+#define THREADRETTYPE void*
+#define THREADRETVALUE 0
 #define WINAPI
+#else
+#define THREADRETTYPE DWORD
+#define THREADRETVALUE 0
+#endif
+
 typedef int HANDLE;
 
 namespace pondering
@@ -26,7 +34,7 @@ namespace pondering
 	extern move PonderingMove;
 	extern DWORD PonderedTime;
 
-	DWORD Ponder( void* Info );
+	THREADRETTYPE Ponder( void* Info );
 	void StopPondering();
 	void StartPondering( position* Position, searcher* Searcher );
 }
