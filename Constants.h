@@ -231,6 +231,7 @@ const int SimplePieceValues[ 6 ] = { 100, 300, 300, 500, 900, 100000 };
 const int PieceValues[ 6 ] = { 100, 325, 325, 500, 970, 100000 };
 const int MaxMaterial = 2 * PieceValues[ Knight ] + 2 * PieceValues[ Bishop ] + 2 * PieceValues[ Rook ] + PieceValues[ Queen ];
 const int Sign[ 2 ] = { 1, -1 };
+const int TempoValue[] = { 5, 8 };
 
 const int DevelopmentThematic = 12;
 const int DevelopmentLosingCastle = 20;

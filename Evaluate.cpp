@@ -877,16 +877,15 @@ void evaluator::FinishEval( evaluation* Out )
 	int EndGameScore = Evaluation.Scores[ EndGame ];
 	int Phase = Evaluation.GamePhase;
 
-	const int Tempo[] = { 20, 5 };
 	if( Position->ToMove == White )
 	{
-		MiddleGameScore += Tempo[ MiddleGame ];
-		EndGameScore += Tempo[ EndGame ];
+		MiddleGameScore += TempoValue[ MiddleGame ];
+		EndGameScore += TempoValue[ EndGame ];
 	}
 	else
 	{
-		MiddleGameScore -= Tempo[ MiddleGame ];
-		EndGameScore -= Tempo[ EndGame ];
+		MiddleGameScore -= TempoValue[ MiddleGame ];
+		EndGameScore -= TempoValue[ EndGame ];
 	}
 
 	Evaluation.FinalScore = ( ( MiddleGameScore * Phase ) + ( EndGameScore * ( 6200 - Phase ) ) ) / 6200;
