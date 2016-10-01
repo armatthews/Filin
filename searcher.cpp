@@ -14,7 +14,7 @@ searcher::searcher()
 {
 	Root.setSearcher(this);
 
-	TranspositionTable.Resize( 256 );
+	TranspositionTable.Resize( 1024 );
 
 	//OpeningBook.OpenBook( "NewBook.txt" );
 

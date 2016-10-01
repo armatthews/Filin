@@ -234,6 +234,7 @@ inputStatus IOHandler::RunCommand( string Command, vector< string >& Parameters 
 		;
 	else if( Command == "setboard" )
 	{
+		position OldPosition = Position;
 		string FEN = "";
 		for( unsigned int i = 0; i < Parameters.size(); i++ )
 		{
@@ -242,7 +243,10 @@ inputStatus IOHandler::RunCommand( string Command, vector< string >& Parameters 
 				FEN += " ";
 		}
 		if( !Position.SetUpPosition( FEN ) )
+		{
 			cout << "Invalid position: \"" << FEN << "\"\n";
+			Position = OldPosition;
+		}
 	}
 	else if( Command == "showboard" )
 		cout << Position.toString() << "\n";
@@ -442,14 +446,14 @@ inputStatus IOHandler::RunTest( vector< string >& Parameters )
 	if( Parameters.size() == 0 || ( Parameters[ 0 ] != "full" && Parameters[ 0 ] != "long" && Parameters[ 0 ] != "short" ) )
 		return INPUT_INCORRECTARGUMENTS;
 
-	Test.Load( "Test Suites//TESTWCSAC.epd" );
-	Test.Run();
+	if(Test.Load( "Test Suites//TESTWCSAC.epd" ) )
+		Test.Run();
 
-	Test.Load( "Test Suites//TESTECM.epd" );
-	Test.Run();
+	if( Test.Load( "Test Suites//TESTECM.epd" ) )
+		Test.Run();
 
-	Test.Load( "Test Suites//TESTWAC.epd" );
-	Test.Run();
+	if (Test.Load( "Test Suites//TESTWAC.epd" ) )
+		Test.Run();
 
 	if( Parameters[ 0 ] == "full" || Parameters[ 0 ] == "long" )
 	{
