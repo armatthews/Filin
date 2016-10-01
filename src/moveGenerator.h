@@ -8,6 +8,7 @@ public:
 	virtual move GetNextMove() = 0;
 	virtual void Reset() = 0;
 	virtual void Reset( bitboard TargetMask ) = 0;
+        virtual ~moveGenerator();
 
 protected:
 	position* Position;

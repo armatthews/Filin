@@ -3,6 +3,8 @@
 #include "Magic.h"
 using std::abs;
 
+moveGenerator::~moveGenerator() {}
+
 bitboard moveGenerator::GetPawnForwards( const position* Position, square s, color c )
 {
 	bitboard SquareMask = Mask[ s ];

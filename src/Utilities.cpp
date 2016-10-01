@@ -50,7 +50,6 @@ unsigned int timeBeginPeriod(unsigned int) {}
 unsigned int timeEndPeriod(unsigned int) {}
 
 #endif
-#pragma warning( disable: 4996 )
 
 string itoa( int i )
 {
