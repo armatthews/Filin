@@ -299,7 +299,7 @@ int searcher::Search( position* Position, int Depth, int Time )
 	int Score = 0;
 	bool Started = false;
 
-	if( Depth == 0 ) Depth = 0x7FFFFFFF;
+	if( Depth == 0 ) Depth = 0x2000;
 
 	InitSearch( Position, Depth, Time );
 
