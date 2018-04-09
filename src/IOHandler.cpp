@@ -51,7 +51,9 @@ inputStatus IOHandler::HandleInput( string s )
 
 	move InputMove = move( s, &Position );
 	if( InputMove == NullMove )
-		InputMove = move( s );	
+		InputMove = move( s );
+	// TODO: Verify that input move is legal.
+	// Right now Filin crashes if the move leaves the king in check.
 
 	if( InputMove != NullMove )
 	{
