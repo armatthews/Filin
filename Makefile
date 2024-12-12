@@ -2,7 +2,7 @@ CC=g++
 INCS=
 LIBS=
 FINAL=-lpthread
-CFLAGS=-std=c++11 -Ofast -g -march=native -pipe
+CFLAGS=-std=c++11 -Ofast -march=native -pipe
 #CFLAGS=-std=c++11 -Wall -pedantic -O0 -g -pipe -DDEBUG -D_DEBUG
 BINDIR=bin
 OBJDIR=obj

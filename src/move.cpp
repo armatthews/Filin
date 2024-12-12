@@ -426,10 +426,9 @@ string move::toString( position* Position ) const
 	type Type = Position->GetPieceType( From(), Position->ToMove );
 	assert( Type != Empty );
 	
-	bool EP = false;
 	bool Checks = DoesMoveCheck( Position );
 	bool Capture = ( Position->GetPieceColor( To() ) != Empty );
-	if( Type == Pawn && To() == Position->EPSquare ) { Capture = true; EP = true; }
+	if( Type == Pawn && To() == Position->EPSquare ) { Capture = true; }
 
 	if( Type == King )
 	{

@@ -24,7 +24,6 @@ namespace pondering
 	THREADRETTYPE WINAPI Ponder( void* Info )
 	{	
 		PonderedTime = 0;
-		DWORD Start = timeGetTime();
 
 		assert( Info != NULL );
 

@@ -56,7 +56,6 @@ int main()
 	cerr << "Filin v0.1" << endl;
 	signal(SIGSEGV, handler);
 
-	timeBeginPeriod(1);
 	srand(timeGetTime());
 	ClearLog();
 	Log("Starting up...\n");
@@ -65,7 +64,6 @@ int main()
 	IOHandler.Begin();
 
 	Log("Exiting...\n");
-	timeEndPeriod(1);
 
 	return 0;
 }

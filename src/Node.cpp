@@ -129,7 +129,7 @@ int Node::CalculateExtensions( move& Move, bool WasInCheck, phase MoveSorterPhas
 				bitboard PawnIsPassed = IsEmpty( PawnPassedMask[ Enemy ][ Move.To() ] & Searcher->ThinkingPosition.Pieces[ ToMove ][ Pawn ] ); // TODO: Double check this.
 				if( !MoverIsPawn || !PawnIsPassed )
 				{
-					int Eval = Searcher->Evaluator.Evaluate( &Searcher->ThinkingPosition, Searcher->RootPosition.Castling, Alpha, Beta );
+					/*int Eval = */Searcher->Evaluator.Evaluate( &Searcher->ThinkingPosition, Searcher->RootPosition.Castling, Alpha, Beta );
 					Extensions -= Ply( 1 );
 					Searcher->Statistics.LateMoveReductionsDone++;
 				}
@@ -181,8 +181,6 @@ int Node::AlphaBeta()
 
 	bool WasInCheck = Searcher->ThinkingPosition.InCheck( Searcher->ThinkingPosition.ToMove );
 	move BestMove = NullMove;
-
-	int LocalBeta = Beta;
 
 	bool debug = false;
 	if((Searcher->Statistics.NodesVisited & 0xFFF) == 0 && false)

@@ -66,8 +66,8 @@ class searcher
 
 		int Iterate( int Depth );
 
-		void RecordKiller( int DistanceFromRoot, move Move );
-		void RecordBestMove( int DepthRemaining, int OriginalAlpha, int Beta, int Score, move BestMove );
+		void RecordKiller( unsigned DistanceFromRoot, move Move );
+		//void RecordBestMove( unsigned DepthRemaining, int OriginalAlpha, int Beta, int Score, move BestMove );
 
 		square GetLowestPiece( bitboard& Attackers, color c ) const;
 
@@ -79,7 +79,7 @@ class searcher
 		void InitSearch( position* Position, int Depth, int Time );
 		int SEE( move Move ) const;
 		move GetHashMove() const;
-		move GetKiller( int DistanceFromRoot, int Index ) const;
+		move GetKiller( unsigned DistanceFromRoot, int Index ) const;
 		void Stop();
 
 	private:

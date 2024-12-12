@@ -820,7 +820,7 @@ void evaluator::InitEval( position* InPosition, int RootCastlingFlags )
 	this->Position = InPosition;
 	Done = false;
 
-	memset( &Evaluation, 0, sizeof( evaluation ) );
+  Evaluation = evaluation();
 
 	for( color c = White; c <= Black; c++ )
 		Evaluation.KingSquare[ c ] = LSBi( Position->Pieces[ c ][ King ] );

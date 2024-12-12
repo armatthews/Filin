@@ -103,7 +103,5 @@ bitboard GetIntermediateSquares( square Start, square End );
 #ifndef NT_i386
 void ZeroMemory(void* destination, int length);
 unsigned int timeGetTime();
-unsigned int timeBeginPeriod(unsigned int);
-unsigned int timeEndPeriod(unsigned int);
 #endif
 #pragma once

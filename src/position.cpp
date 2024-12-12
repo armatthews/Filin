@@ -52,7 +52,7 @@ bool position::SetUpPosition( string FEN )
 			Pieces[ c ][ t ] = 0;
 	}
 
-	int i = 0;
+	unsigned i = 0;
 
 	for( int BoardSquare = 0; BoardSquare < 64; BoardSquare++ )
 	{
@@ -744,8 +744,6 @@ bool position::IsSquareAttackedByColor( square s, color c ) const
 {
 	assert( A1 <= s && s <= H8 );
 	assert( c == White || c == Black );
-
-	bool IsAttacked = false;
 
 	bitboard BishopMoves = moveGenerator::GetBishopMoves( this, s, ( c == White ) ? Black : White );
 	if( BishopMoves & ( Pieces[ c ][ Queen ] | Pieces[ c ][ Bishop ] ) )

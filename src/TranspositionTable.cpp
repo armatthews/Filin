@@ -152,7 +152,7 @@ BoundType transpositionTable::Probe( zobrist Zobrist, int DistanceFromRoot, int 
 	return NONE;
 }
 
-void transpositionTable::Store( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, BoundType Type, int Value, move Move )
+void transpositionTable::Store( zobrist Zobrist, unsigned DistanceFromRoot, unsigned DepthRemaining, BoundType Type, int Value, move Move )
 {
 	element* Replace = &Data[ 3 * ( Zobrist & IndexMask ) ];
 
@@ -197,9 +197,9 @@ void transpositionTable::Store( zobrist Zobrist, int DistanceFromRoot, int Depth
 	assert( DepthRemaining >= 0 );
 }
 
-void transpositionTable::StorePV( position* Position, line PV, int DepthRemaining, int Value )
+void transpositionTable::StorePV( position* Position, line PV, unsigned DepthRemaining, int Value )
 {
-	for( int i = 0; i <= DepthRemaining / Ply( 1 ); i++ )
+	for( unsigned i = 0; i <= DepthRemaining / Ply( 1 ); i++ )
 	{
 		move Move = ( i < PV.size() ) ? PV[ i ] : NullMove;
 
@@ -211,20 +211,20 @@ void transpositionTable::StorePV( position* Position, line PV, int DepthRemainin
 		Value = -Value;
 	}
 
-	for( int i = 0; i < PV.size() && i <= DepthRemaining / Ply( 1 ); i++ )
+	for( unsigned i = 0; i < PV.size() && i <= DepthRemaining / Ply( 1 ); i++ )
 		Position->TakeBack();
 }
 
 void transpositionTable::DebugProbe( zobrist Zobrist ) const
 {
-	printf( "Looking up 0x%I64x. Mask is 0x%I64x.\n Transposition table dump for bin %I64x:\n", Zobrist, IndexMask, ( Zobrist & IndexMask ) );
+	printf( "Looking up 0x%llx. Mask is 0x%x.\n Transposition table dump for bin %llx:\n", Zobrist, IndexMask, ( Zobrist & IndexMask ) );
 
 	element* Element = NULL;
 	for( int i = 0; i < 3; i++ )
 	{
 		Element = &Data[ 3 * ( Zobrist & IndexMask ) + i ];
 		cout << "Element " << i + 1 << ":\n";
-		printf( "\tKey:\t0x%I64x%s\n", Element->Key, ( Element->Key == Zobrist ) ? "*" : "" );
+		printf( "\tKey:\t0x%llx%s\n", Element->Key, ( Element->Key == Zobrist ) ? "*" : "" );
 		cout << "\tGeneration:\t" << Element->Generation << "\n";
 		cout << "\tDepth:\t" << Element->Depth << "\n";
 		cout << "\tType:\t" << Element->Type << "\n";

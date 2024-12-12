@@ -57,7 +57,7 @@ move searcher::GetHashMove() const
 	return TranspositionTable.BestMove( ThinkingPosition.Zobrist );
 }
 
-void searcher::RecordKiller( int DistanceFromRoot, move Move )
+void searcher::RecordKiller( unsigned DistanceFromRoot, move Move )
 {
 	if( Move.Promote() != Empty )
 		return;
@@ -79,7 +79,7 @@ void searcher::RecordKiller( int DistanceFromRoot, move Move )
 	PlyInfo[ DistanceFromRoot ].Killers[ 0 ] = Move;
 }
 
-move searcher::GetKiller( int DistanceFromRoot, int Index ) const
+move searcher::GetKiller( unsigned DistanceFromRoot, int Index ) const
 {
 	if( DistanceFromRoot < PlyInfo.size() && Index < NUM_KILLERS )
 		return PlyInfo[ DistanceFromRoot ].Killers[ Index ];
@@ -297,7 +297,6 @@ line searcher::GetPrincipleVariation() const
 int searcher::Search( position* Position, int Depth, int Time )
 {
 	int Score = 0;
-	bool Started = false;
 
 	if( Depth == 0 ) Depth = 0x2000;
 
@@ -308,7 +307,6 @@ int searcher::Search( position* Position, int Depth, int Time )
 
 	if( setjmp( JumpToSearchStart ) == 0 )
 	{
-		Started = true;
 		Score = Iterate( Depth );
 	}
 

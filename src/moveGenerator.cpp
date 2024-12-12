@@ -88,7 +88,6 @@ bitboard moveGenerator::GetPinnedPieces( const position* Position, color c )
 	bitboard Pinners, b;
 
 	square s;
-	direction Direction;
 	
 	Pinners = Position->Pieces[ Enemy ][ Queen ] | Position->Pieces[ Enemy ][ Rook ];
 	b = ( GetRookXRay( KingSquare, Position->BothPieces ) ) & Pinners;
@@ -200,7 +199,6 @@ bitboard moveGenerator::GetLegalQueenMoves( const position* Position, square s, 
 
 bitboard moveGenerator::GetLegalKingMoves( const position* Position, square s, color c )
 {
-	bitboard r = 0;
 	color Enemy = ( c == White ) ? Black : White;
 
 	bitboard KingMoves = GetKingMoves( Position, s, c );

@@ -7,8 +7,8 @@ struct element
 {
 	zobrist Key;
 
-	BoundType Type : 3;
-	int Generation : 3;
+	BoundType Type;
+	unsigned Generation;
 	int Value : 32;
 	unsigned short Depth : 16;
 	move BestMove; // 32
@@ -37,8 +37,8 @@ public:
 	BoundType Probe( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, int& Alpha, int Beta ) const;
 	move BestMove( zobrist Zobrist ) const;
 	int StartDepth( zobrist Zobrist, int& StartValue );
-	void Store( zobrist Zobrist, int DistanceFromRoot, int DepthRemaining, BoundType Type, int Value, move Move );
-	void StorePV( position* Position, line PV, int DepthRemaining, int Value );
+	void Store( zobrist Zobrist, unsigned DistanceFromRoot, unsigned DepthRemaining, BoundType Type, int Value, move Move );
+	void StorePV( position* Position, line PV, unsigned DepthRemaining, int Value );
 
 	void Resize( unsigned int Size );
 	void Clear();

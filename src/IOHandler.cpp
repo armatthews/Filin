@@ -318,7 +318,7 @@ inputStatus IOHandler::ListMoves()
 		return INPUT_HANDLED;
 	}
 
-	for( int i = 0; i < MoveList.size(); i++ )
+	for( unsigned i = 0; i < MoveList.size(); i++ )
 	{
 		move Move = MoveList[ i ];
 		cout << Move.toString( &Position ) << " ";
@@ -578,7 +578,7 @@ inputStatus IOHandler::Go()
 	if( GameIsOver() )
 		return INPUT_HANDLED;
 
-	int Score = Searcher.Search( &Position, 0, Preferences.TimeSetting );
+	/*int Score = */Searcher.Search( &Position, 0, Preferences.TimeSetting );
 
 	if( Searcher.GetPrincipleVariation().size() == 0 )
 	{

@@ -34,7 +34,7 @@ protected:
 
 	scoreList GoodCaptureScores;
 
-	int MovesSorted;
+	unsigned MovesSorted;
 
 	moveSorter();
 

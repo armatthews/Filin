@@ -46,9 +46,6 @@ void ZeroMemory(void* Destination, int Length)
 	memset(Destination, 0, Length);
 }
 
-unsigned int timeBeginPeriod(unsigned int) {}
-unsigned int timeEndPeriod(unsigned int) {}
-
 #endif
 
 string itoa( int i )
@@ -265,7 +262,7 @@ bitboard Ray( square From, direction Direction )
 
 bool IsCharDelim( char c, string Delims )
 {
-	for( int i = 0; i < Delims.length(); i++ )
+	for( unsigned i = 0; i < Delims.length(); i++ )
 		if( c == Delims[ i ] ) return true;
 	return false;
 }
@@ -277,7 +274,7 @@ vector< string > Tokenize( string s, string Delims )
 
 	string Token = "";
 
-	for( int i = 0; i < s.length(); i++ )
+	for( unsigned i = 0; i < s.length(); i++ )
 	{
 		if( s[ i ] == '\"' && ( i == 0 || s[ i - 1 ] != '\\' ) )
 			InQuotes = !InQuotes;
