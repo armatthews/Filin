@@ -82,13 +82,13 @@ bitboard moveGenerator::GetRookXRay( square s, bitboard occupancy )
 bitboard moveGenerator::GetPinnedPieces( const position* Position, color c )
 {
 	color Enemy = ( c == White ) ? Black : White;
-	square KingSquare = LSBi( Position->Pieces[ c ][ King ]  );
+	square KingSquare = LSBi( Position->Pieces[ c ][ King ] );
 
 	bitboard PinnedPieces = 0;
 	bitboard Pinners, b;
 
 	square s;
-	
+
 	Pinners = Position->Pieces[ Enemy ][ Queen ] | Position->Pieces[ Enemy ][ Rook ];
 	b = ( GetRookXRay( KingSquare, Position->BothPieces ) ) & Pinners;
 	while( b )
@@ -270,7 +270,7 @@ bitboard moveGenerator::GetLegalMoves( const position* Position, square Square, 
 
 	switch( t )
 	{
-		case Pawn:	
+		case Pawn:
 			if( IsPinned )
 				Moves = GetLegalPawnForwards( Position, Square, ToMove ) | GetLegalPawnAttacks( Position, Square, ToMove );
 			else
@@ -283,18 +283,25 @@ bitboard moveGenerator::GetLegalMoves( const position* Position, square Square, 
 					if( GetPawnAttacks( Square, ToMove ) & Mask[ Position->EPSquare ] )
 					{
 						bool IsSafe = true;
+						square Captured = MakeSquare( File( Position->EPSquare ), Rank( Square ) );
+						color Enemy = ( ToMove == White ) ? Black : White;
+
 						if( Position->Pieces[ ToMove ][ King ] & RankMask[ Rank( Square ) ] )
 						{
-							square Captured = MakeSquare( File( Position->EPSquare ), Rank( Square ) );
 							bitboard RankAttacks = GetRookMoves( Square, Position->BothPieces ^ Mask[ Captured ] );
 							RankAttacks &= RankMask[ Rank( Square ) ];
 							if( RankAttacks & Position->Pieces[ ToMove ][ King ] )
 							{
-								color Enemy = ( ToMove == White ) ? Black : White;
 								if( RankAttacks & ( Position->Pieces[ Enemy ][ Rook ] | Position->Pieces[ Enemy ][ Queen ] ) )
 									IsSafe = false;
 							}
 						}
+
+						bitboard BishopAttacks = GetBishopMoves( Captured, Position->BothPieces );
+						if ( BishopAttacks & Position->Pieces[ ToMove ][ King ] )
+							if ( BishopAttacks & (Position->Pieces[ Enemy ][ Bishop ] | Position->Pieces[ Enemy ][ Queen ] ) )
+								IsSafe = false;
+
 						if( IsSafe )
 							Moves |= Mask[ Position->EPSquare ];
 					}
@@ -353,7 +360,7 @@ type moveGenerator::GetNextPromotion()
 }
 
 LegalMoveGenerator::LegalMoveGenerator( position* Position )
-{	
+{
 	this->Position = Position;
 	this->ToMove = Position->ToMove;
 	this->PinnedPieces = moveGenerator::GetPinnedPieces( Position, ToMove );
@@ -406,7 +413,7 @@ move LegalMoveGenerator::GetNextMove()
 		}
 		else
 		{
-			Moves ^= Mask[ To ];	
+			Moves ^= Mask[ To ];
 			return move( Square, To, Empty );
 		}
 	}
@@ -427,8 +434,8 @@ void LegalMoveGenerator::SetSquareAndMoves()
 	while( TempMovers == 0 )
 	{
 		assert( NextType < 6 );
-		Type = Order[ NextType ]; 
-		TempMovers = Movers & Position->Pieces[ ToMove ][ Type ];	
+		Type = Order[ NextType ];
+		TempMovers = Movers & Position->Pieces[ ToMove ][ Type ];
 		if( TempMovers == 0 )
 			NextType++;
 	}
@@ -500,7 +507,7 @@ void EvasionGenerator::SetupInterceptionPhase()
 	IntermediateSquares = GetIntermediateSquares( KingSquare, Checker ) & TargetMask;
 	if( IntermediateSquares )
 		Interceptors = FindInterceptors( LSBi( IntermediateSquares ) );
-	
+
 	Phase = InterceptionPhase;
 }
 
@@ -557,7 +564,7 @@ move EvasionGenerator::GetNextMove()
 				bool IsMoveToLastRank = ( Checkers & ( RankMask[ 0 ] | RankMask[ 7 ] ) );
 				bool IsMoverPawn = ( Position->Pieces[ ToMove ][ Pawn ] & Mask[ From ] );
 
-				if(  IsMoveToLastRank && IsMoverPawn  )
+				if( IsMoveToLastRank && IsMoverPawn )
 				{
 					if( NextPromotion == Bishop )
 						Attackers ^= Mask[ From ];
